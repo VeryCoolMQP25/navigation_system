@@ -1,7 +1,5 @@
-import pyttsx3
 import time
 import string
-import subprocess
 from RealtimeSTT import AudioToTextRecorder
 from websocket_server import WebsocketServer
 import json
@@ -12,7 +10,6 @@ import websockets
 
 classifier = RoomClassifier()
 llm = LLM_RAG()
-engine = pyttsx3.init()
 
 room_num = None #global variable 
 
@@ -43,15 +40,15 @@ def wake_word(text):
     if text:
         cleaned_text = clean_text(text)
         if "hey tori" in cleaned_text or "hey tory" in cleaned_text or "hey torry" in cleaned_text:
-            engine.say("Hi, I'm Tori, a tour guide robot in Unity Hall. Would you like to say a navigation command or ask me a question?")
-            engine.runAndWait()
+        #     engine.say("Hi, I'm Tori, a tour guide robot in Unity Hall. Would you like to say a navigation command or ask me a question?")
+        #     engine.runAndWait()
             time.sleep(7)
             return True
     return False
 
 def handle_navigation(recorder, classifier):
-    engine.say("Where do you want to go?")
-    engine.runAndWait()
+    # engine.say("Where do you want to go?")
+    # engine.runAndWait()
     time.sleep(2)
     
     attempts = 0
@@ -67,8 +64,8 @@ def handle_navigation(recorder, classifier):
             response = classifier.get_navigation_response(cleaned_text)
             
             if response['success']:
-                engine.say(response['message'])
-                engine.runAndWait()
+                # engine.say(response['message'])
+                # engine.runAndWait()
                 print("Location info:", classifier.extract_location_info(cleaned_text))
                 var = classifier.extract_location_info(cleaned_text) 
                 room_num = var['room_number']
@@ -89,19 +86,19 @@ def handle_navigation(recorder, classifier):
                 else:
                     prompt = "I didn't understand. Please try again."
                 
-                engine.say(prompt)
-                engine.runAndWait()
+                # engine.say(prompt)
+                # engine.runAndWait()
             else:
-                engine.say("I'm still having trouble understanding. Let's start over. Please say the wake phrase when you're ready.")
-                engine.runAndWait()
+                # engine.say("I'm still having trouble understanding. Let's start over. Please say the wake phrase when you're ready.")
+                # engine.runAndWait()
                 classifier.reset_context() #reset context for next run 
                 return False 
     return False
 
 def question(recorder): 
     print("Ask question")
-    engine.say("What is your question?")
-    engine.runAndWait()
+    # engine.say("What is your question?")
+    # engine.runAndWait()
     time.sleep(1)
 
     text = recorder.text()
@@ -111,8 +108,8 @@ def question(recorder):
         cleaned_text = clean_text(text)
         response = cleaned_text
     response = llm.generate_response(cleaned_text) 
-    engine.say(response)
-    engine.runAndWait()
+    # engine.say(response)
+    # engine.runAndWait()
     print(response)
     return True 
 
@@ -121,8 +118,8 @@ def exit(text):
         cleaned_text = clean_text(text)
         exit_words = {"stop", "goodbye", "bye"}
         if any(word in cleaned_text.lower() for word in exit_words):
-            engine.say("Goodbye!")
-            engine.runAndWait()
+            # engine.say("Goodbye!")
+            # engine.runAndWait()
             return True
     return False
 
@@ -133,8 +130,8 @@ def main():
     try:
         while True:
             print("Listening for the wake phrase...")
-            engine.say("Please say a wake word when you are ready")
-            engine.runAndWait()
+            # engine.say("Please say a wake word when you are ready")
+            # engine.runAndWait()
             time.sleep(1)
             
             while True:  # wake word loop
